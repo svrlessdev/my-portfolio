@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bappherh Jr. | The Dev</title>
+    <!-- Tailwind via Script Tag for local-like processing -->
+    <script src="index.global.js"></script>
+    <style>
+        /* Modern Typography Fallbacks */
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
+
+        :root {
+            --bg-color: #050505;
+            --accent: #6366f1;
+            --accent-secondary: #a855f7;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-color);
+            color: #ffffff;
+            margin: 0;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Smooth Page Transitions */
+        .page-content {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-link.active {
+            color: white;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* Custom UI Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #050505; }
+        ::-webkit-scrollbar-thumb { background: #222; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #333; }
+
+        .blob-bg {
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.08) 0%, transparent 70%);
+            z-index: -1;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="selection:bg-indigo-500/30">
+
+    <div class="blob-bg top-[-200px] left-[-200px]"></div>
+    <div class="blob-bg bottom-[-200px] right-[-200px]" style="background: radial-gradient(circle, rgba(168, 85, 247, 0.08) 0%, transparent 70%);"></div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 p-6">
+        <div class="max-w-5xl mx-auto flex justify-between items-center glass rounded-2xl px-6 py-4">
+            <div class="text-xl font-extrabold tracking-tighter cursor-pointer" onclick="navigateTo('home')">
+                BAP<span class="text-indigo-500">P</span>HERH
+            </div>
+            
+            <!-- Desktop Menu -->
+            <div class="hidden md:flex gap-2 text-sm font-medium text-gray-400">
+                <button onclick="navigateTo('home')" class="nav-link px-4 py-2 rounded-lg hover:text-white transition-all" data-page="home">Home</button>
+                <button onclick="navigateTo('about')" class="nav-link px-4 py-2 rounded-lg hover:text-white transition-all" data-page="about">About</button>
+                <button onclick="navigateTo('projects')" class="nav-link px-4 py-2 rounded-lg hover:text-white transition-all" data-page="projects">Work</button>
+                <button onclick="navigateTo('skills')" class="nav-link px-4 py-2 rounded-lg hover:text-white transition-all" data-page="skills">Skills</button>
+                <button onclick="navigateTo('contact')" class="nav-link px-4 py-2 rounded-lg hover:text-white transition-all" data-page="contact">Contact</button>
+            </div>
+
+            <!-- Mobile Menu Toggle -->
+            <button class="md:hidden p-2" onclick="toggleMobileMenu()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+            </button>
+        </div>
+        
+        <!-- Mobile Dropdown -->
+        <div id="mobile-menu" class="hidden absolute top-24 left-6 right-6 glass rounded-2xl p-4 flex flex-col gap-2 md:hidden">
+            <button onclick="navigateTo('home'); toggleMobileMenu()" class="text-left px-4 py-3 hover:bg-white/5 rounded-xl">Home</button>
+            <button onclick="navigateTo('about'); toggleMobileMenu()" class="text-left px-4 py-3 hover:bg-white/5 rounded-xl">About</button>
+            <button onclick="navigateTo('projects'); toggleMobileMenu()" class="text-left px-4 py-3 hover:bg-white/5 rounded-xl">Work</button>
+            <button onclick="navigateTo('skills'); toggleMobileMenu()" class="text-left px-4 py-3 hover:bg-white/5 rounded-xl">Skills</button>
+            <button onclick="navigateTo('contact'); toggleMobileMenu()" class="text-left px-4 py-3 hover:bg-white/5 rounded-xl">Contact</button>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main id="app" class="pt-32 pb-20 px-6 max-w-5xl mx-auto min-h-screen">
+        <!-- Content injected by JavaScript -->
+    </main>
+
+    <!-- Footer -->
+    <footer class="py-10 border-t border-white/5 text-center text-gray-500 text-xs">
+        <p>&copy; 2024 Bappherh Jr. • 15yo Developer • @t.h.e_d.e.v</p>
+    </footer>
+
+    <script>
+        // --- Router Logic ---
+        const pages = {
+            home: `
+                <div class="page-content space-y-12">
+                    <section class="text-center space-y-6 pt-10">
+                        <span class="px-4 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-bold uppercase tracking-widest">Available for Hire</span>
+                        <h1 class="text-6xl md:text-8xl font-extrabold tracking-tighter leading-none">
+                            Leveling up the <br/><span class="gradient-text">Web Experience.</span>
+                        </h1>
+                        <p class="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto">
+                            I'm Bappherh Jr., known online as <span class="text-white font-bold">The Dev</span>. 
+                            A 15-year-old creator crafting pixel-perfect interfaces.
+                        </p>
+                        <div class="flex flex-wrap justify-center gap-4 pt-6">
+                            <button onclick="navigateTo('projects')" class="px-8 py-4 bg-indigo-600 rounded-full font-bold hover:scale-105 transition-all">Explore Work</button>
+                            <button onclick="navigateTo('contact')" class="px-8 py-4 glass rounded-full font-bold hover:bg-white/5 transition-all">Get in Touch</button>
+                        </div>
+                    </section>
+
+                    <section class="grid md:grid-cols-3 gap-6 pt-10">
+                        <div class="glass p-8 rounded-3xl space-y-4">
+                            <div class="w-12 h-12 bg-indigo-500/20 rounded-2xl flex items-center justify-center text-indigo-400">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 16 4-4-4-4"/><path d="m6 8-4 4 4 4"/><path d="m14.5 4-5 16"/></svg>
+                            </div>
+                            <h3 class="text-xl font-bold">Frontend Dev</h3>
+                            <p class="text-gray-500 text-sm">Building responsive, high-performance web apps with modern frameworks.</p>
+                        </div>
+                        <div class="glass p-8 rounded-3xl space-y-4">
+                            <div class="w-12 h-12 bg-purple-500/20 rounded-2xl flex items-center justify-center text-purple-400">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="15" x="2" y="3" rx="2"/><line x1="12" x2="12" y1="18" y2="21"/><line x1="8" x2="16" y1="21" y2="21"/></svg>
+                            </div>
+                            <h3 class="text-xl font-bold">Content Creator</h3>
+                            <p class="text-gray-500 text-sm">Sharing the developer journey to 100k+ followers as The Dev on TikTok.</p>
+                        </div>
+                        <div class="glass p-8 rounded-3xl space-y-4">
+                            <div class="w-12 h-12 bg-pink-500/20 rounded-2xl flex items-center justify-center text-pink-400">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/></svg>
+                            </div>
+                            <h3 class="text-xl font-bold">Serverless Tech</h3>
+                            <p class="text-gray-500 text-sm">Passionate about scalable, serverless architecture and cloud solutions.</p>
+                        </div>
+                    </section>
+                </div>
+            `,
+            about: `
+                <div class="page-content space-y-12">
+                    <div class="grid md:grid-cols-2 gap-12 items-center">
+                        <div class="space-y-6">
+                            <h2 class="text-5xl font-extrabold tracking-tight">The Story <br/>Behind <span class="gradient-text">The Dev.</span></h2>
+                            <p class="text-gray-400 leading-relaxed">
+                                I started my journey at 13, curious about how the internet works. Two years later, I've mastered the art of the frontend and built a community around learning to code.
+                            </p>
+                            <p class="text-gray-400 leading-relaxed">
+                                Based in a world of code, I believe age is just a number. My focus is on accessibility, speed, and creating interfaces that feel "alive".
+                            </p>
+                            <div class="pt-4 flex gap-6">
+                                <div><h4 class="text-2xl font-bold">50+</h4><p class="text-xs text-gray-500 uppercase">Projects</p></div>
+                                <div><h4 class="text-2xl font-bold">2yr</h4><p class="text-xs text-gray-500 uppercase">Experience</p></div>
+                                <div><h4 class="text-2xl font-bold">1M+</h4><p class="text-xs text-gray-500 uppercase">Social Reach</p></div>
+                            </div>
+                        </div>
+                        <div class="glass aspect-square rounded-3xl flex items-center justify-center text-8xl grayscale hover:grayscale-0 transition-all duration-500">
+                            👨‍💻
+                        </div>
+                    </div>
+                </div>
+            `,
+            projects: `
+                <div class="page-content space-y-12">
+                    <div class="flex justify-between items-end">
+                        <h2 class="text-5xl font-extrabold tracking-tight">Work <span class="text-indigo-500">Gallery</span></h2>
+                        <p class="text-gray-500 hidden md:block">Real world applications built by Bappherh Jr.</p>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div class="glass overflow-hidden rounded-[2rem] group">
+                            <div class="aspect-video bg-indigo-900/40 flex items-center justify-center text-4xl group-hover:scale-105 transition-transform duration-500">🚀</div>
+                            <div class="p-8">
+                                <h3 class="text-2xl font-bold">SVRLESS.dev</h3>
+                                <p class="text-gray-400 mt-2">A cloud automation platform for edge computing.</p>
+                                <div class="flex gap-4 mt-6">
+                                    <a href="https://github.com/svrlessdev" class="text-sm font-bold text-indigo-400 hover:underline">GitHub</a>
+                                    <span class="text-gray-700">|</span>
+                                    <span class="text-xs text-gray-500 uppercase tracking-widest mt-1">Next.js • AWS</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="glass overflow-hidden rounded-[2rem] group">
+                            <div class="aspect-video bg-purple-900/40 flex items-center justify-center text-4xl group-hover:scale-105 transition-transform duration-500">🎨</div>
+                            <div class="p-8">
+                                <h3 class="text-2xl font-bold">VibeUI Library</h3>
+                                <p class="text-gray-400 mt-2">A component library for high-speed frontend prototyping.</p>
+                                <div class="flex gap-4 mt-6">
+                                    <a href="https://github.com/bappherhjr" class="text-sm font-bold text-indigo-400 hover:underline">GitHub</a>
+                                    <span class="text-gray-700">|</span>
+                                    <span class="text-xs text-gray-500 uppercase tracking-widest mt-1">React • Tailwind</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `,
+            skills: `
+                <div class="page-content space-y-12">
+                    <h2 class="text-5xl font-extrabold tracking-tight">Stack & <span class="gradient-text">Tools.</span></h2>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="glass p-6 rounded-2xl text-center hover:border-indigo-500/50 transition-all">
+                            <div class="text-3xl mb-2">⚛️</div>
+                            <h4 class="font-bold">React</h4>
+                        </div>
+                        <div class="glass p-6 rounded-2xl text-center hover:border-indigo-500/50 transition-all">
+                            <div class="text-3xl mb-2">🎨</div>
+                            <h4 class="font-bold">Tailwind</h4>
+                        </div>
+                        <div class="glass p-6 rounded-2xl text-center hover:border-indigo-500/50 transition-all">
+                            <div class="text-3xl mb-2">⚡</div>
+                            <h4 class="font-bold">Next.js</h4>
+                        </div>
+                        <div class="glass p-6 rounded-2xl text-center hover:border-indigo-500/50 transition-all">
+                            <div class="text-3xl mb-2">🔥</div>
+                            <h4 class="font-bold">Firebase</h4>
+                        </div>
+                        <div class="glass p-6 rounded-2xl text-center hover:border-indigo-500/50 transition-all">
+                            <div class="text-3xl mb-2">📦</div>
+                            <h4 class="font-bold">Vite</h4>
+                        </div>
+                        <div class="glass p-6 rounded-2xl text-center hover:border-indigo-500/50 transition-all">
+                            <div class="text-3xl mb-2">🟦</div>
+                            <h4 class="font-bold">TypeScript</h4>
+                        </div>
+                        <div class="glass p-6 rounded-2xl text-center hover:border-indigo-500/50 transition-all">
+                            <div class="text-3xl mb-2">📱</div>
+                            <h4 class="font-bold">Responsive</h4>
+                        </div>
+                        <div class="glass p-6 rounded-2xl text-center hover:border-indigo-500/50 transition-all">
+                            <div class="text-3xl mb-2">☁️</div>
+                            <h4 class="font-bold">Serverless</h4>
+                        </div>
+                    </div>
+                </div>
+            `,
+            contact: `
+                <div class="page-content max-w-2xl mx-auto space-y-8">
+                    <div class="text-center space-y-4">
+                        <h2 class="text-5xl font-extrabold tracking-tight">Let's <span class="gradient-text">Collaborate.</span></h2>
+                        <p class="text-gray-400">Available for freelance work, open-source projects, and technical writing.</p>
+                    </div>
+                    
+                    <div class="glass p-8 rounded-[2.5rem] space-y-6">
+                        <div class="flex items-center gap-6 p-4 rounded-2xl hover:bg-white/5 transition-all">
+                            <div class="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center">📧</div>
+                            <div>
+                                <p class="text-xs text-gray-500 uppercase tracking-widest font-bold">Email</p>
+                                <a href="mailto:bappherhjr11@gmail.com" class="text-lg font-bold hover:text-indigo-400">bappherhjr11@gmail.com</a>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-6 p-4 rounded-2xl hover:bg-white/5 transition-all">
+                            <div class="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center">🐙</div>
+                            <div>
+                                <p class="text-xs text-gray-500 uppercase tracking-widest font-bold">Main GitHub</p>
+                                <a href="https://github.com/bappherhjr" target="_blank" class="text-lg font-bold hover:text-indigo-400">github.com/bappherhjr</a>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-6 p-4 rounded-2xl hover:bg-white/5 transition-all">
+                            <div class="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center">🎬</div>
+                            <div>
+                                <p class="text-xs text-gray-500 uppercase tracking-widest font-bold">TikTok</p>
+                                <a href="https://tiktok.com/@t.h.e_d.e.v" target="_blank" class="text-lg font-bold hover:text-indigo-400">@t.h.e_d.e.v</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `
+        };
+
+        const app = document.getElementById('app');
+
+        function navigateTo(pageId) {
+            // Update Active State in Nav
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('data-page') === pageId) {
+                    link.classList.add('active');
+                }
+            });
+
+            // Smooth content swap
+            app.innerHTML = pages[pageId] || pages.home;
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Handle browser history or initial load
+        window.onload = () => {
+            navigateTo('home');
+        };
+    </script>
+</body>
+</html>
